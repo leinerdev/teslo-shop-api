@@ -1,4 +1,13 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { ProductImage } from '.';
 
 @Entity()
 export class Product {
@@ -12,18 +21,18 @@ export class Product {
 
   @Column('float', {
     default: 0,
-  })  
+  })
   price: number;
 
   @Column({
     type: 'text',
     nullable: true,
-  })  
+  })
   description: string;
 
   @Column('text', {
     unique: true,
-  })  
+  })
   slug: string;
 
   @Column('int', {
@@ -38,15 +47,19 @@ export class Product {
 
   @Column('text')
   gender: string;
-  
+
   // Tags
   @Column('text', {
     array: true,
-    default: []
+    default: [],
   })
   tags: string[];
 
   // Images
+  @OneToMany(() => ProductImage, (productImage) => productImage.product, {
+    cascade: true,
+  })
+  images?: ProductImage[];
 
   @BeforeInsert()
   checkSlugInsert() {
